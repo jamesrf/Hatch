@@ -7,9 +7,9 @@ Install Hatch on your desktop -- Windows edition:
 If you're reading this online, first download hatch to your desktop.
 
 The canonical location for this project is:
-http://git.evergreen-ils.org/?p=working/random.git;a=shortlog;h=refs/heads/collab/berick/hatch2
+http://git.evergreen-ils.org/?p=Hatch.git
 
-But a convenient mirror and download link is this:
+But a convenient snapshot as of 2015-08-20 is here:
 https://github.com/phasefx/random/archive/hatch.zip
 
 Unzip the file wherever you'd like to install the application, such as in C:\Program Files\
