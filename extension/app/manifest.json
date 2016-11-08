@@ -1,0 +1,22 @@
+{
+  // Extension ID: knldjmfmopnpolahpmmgbagdohdnhkik
+  "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDcBHwzDvyBQ6bDppkIs9MP4ksKqCMyXQ/A52JivHZKh4YO/9vJsT3oaYhSpDCE9RPocOEQvwsHsFReW2nUEc6OLLyoCFFxIb7KkLGsmfakkut/fFdNJYh0xOTbSN8YvLWcqph09XAY2Y/f0AL7vfO1cuCqtkMt8hFrBGWxDdf9CQIDAQAB",
+  "name": "Hatch Native Messenger",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Relays messages to/from Hatch.",
+  "background" : {
+    "scripts" : ["extension.js"]
+  },
+  "browser_action": {
+    "default_title": "Hatch"
+  },
+  "permissions": [
+    "nativeMessaging",
+    "declarativeContent"
+  ],
+  "optional_permissions": [
+    "https://*/eg/staff/*"
+  ],
+  "minimum_chrome_version": "38"
+}

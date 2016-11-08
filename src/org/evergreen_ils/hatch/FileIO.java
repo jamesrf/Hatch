@@ -18,8 +18,7 @@ package org.evergreen_ils.hatch;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Arrays;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
+import java.util.logging.Logger;
 
 public class FileIO {
 
@@ -60,7 +59,7 @@ public class FileIO {
     // -------------------------------------------------- 
 
     // logger
-    private static final Logger logger = Log.getLogger("FileIO");
+    static final Logger logger = Logger.getLogger("org.evergreen_ils.hatch");
 
     /**
      * Constructs a new FileIO with the provided base path.
@@ -84,7 +83,7 @@ public class FileIO {
         File dir = new File(basePath);
         if (!dir.exists()) {
             if (!dir.mkdir()) {
-                logger.info("Unable to create directory: " + dir.getName());
+                //logger.info("Unable to create directory: " + dir.getName());
                 return null;
             }
         }
@@ -93,12 +92,12 @@ public class FileIO {
         File subDir = new File(basePath, originDomain);
         if (!subDir.exists()) {
             if (!subDir.mkdir()) {
-                logger.info("Unable to create directory: " + subDir.getName());
+                //logger.info("Unable to create directory: " + subDir.getName());
                 return null;
             }
         }
 
-        logger.info("baseDir: " + subDir.getName());
+        //logger.info("baseDir: " + subDir.getName());
         return subDir;
     }
 
@@ -124,7 +123,7 @@ public class FileIO {
      * @return success or failure
      */
     public boolean set(String key, String text) {
-        logger.info("set => " + key);
+        //logger.info("set => " + key);
         File file = getFile(key);
 
         if (text == null) return false;
@@ -133,8 +132,8 @@ public class FileIO {
 
             // delete the file if it exists
             if (!file.exists() && !file.createNewFile()) {
-                logger.info(
-                    "Unable to create file: " + file.getCanonicalPath());
+                //logger.info(
+                    //"Unable to create file: " + file.getCanonicalPath());
                 return false;
             }
 
@@ -146,8 +145,8 @@ public class FileIO {
             outStream.close();
 
         } catch(IOException e) {
-            logger.warn("Error calling set() with key " + key);
-            logger.warn(e);
+            //logger.warn("Error calling set() with key " + key);
+            //logger.warn(e);
             return false;
         }
 
@@ -164,15 +163,15 @@ public class FileIO {
      * @return success or failure
      */
     public boolean append(String key, String text) {
-        logger.info("append => " + key);
+        //logger.info("append => " + key);
         File file = getFile(key);
 
         try {
 
             // create the file if it doesn's already exist
             if (!file.exists() && !file.createNewFile()) {
-                logger.info(
-                    "Unable to create file: " + file.getCanonicalPath());
+                //logger.info(
+                    //"Unable to create file: " + file.getCanonicalPath());
                 return false;
             }
 
@@ -183,8 +182,8 @@ public class FileIO {
             outStream.close();
 
         } catch(IOException e) {
-            logger.warn("Error in append() with key " + key);
-            logger.warn(e);
+            //logger.warn("Error in append() with key " + key);
+            //logger.warn(e);
             return false;
         }
 
@@ -198,7 +197,7 @@ public class FileIO {
      * @return The text content of the file
      */
     public String get(String key) {
-        logger.info("get => " + key);
+        //logger.info("get => " + key);
         File file = getFile(key);
         if (!file.exists()) return null;
 
@@ -213,8 +212,8 @@ public class FileIO {
                 buf.append(line);
             }
         } catch (IOException e) {
-            logger.warn("Error reading key: " + key);
-            logger.warn(e);
+            //logger.warn("Error reading key: " + key);
+            //logger.warn(e);
             return null;
         }
 
@@ -228,20 +227,20 @@ public class FileIO {
      * @return success or failure
      */
     public boolean remove(String key) {
-        logger.info("remove => " + key);
+        //logger.info("remove => " + key);
         File file = getFile(key);
-        try {
+        //try {
             if (file.exists() && !file.delete()) {
-                logger.info(
-                    "Unable to delete file: " + file.getCanonicalPath());
+                //logger.info(
+                    //"Unable to delete file: " + file.getCanonicalPath());
                 return false;
             }
             return true;
-        } catch (IOException e) {
-            logger.warn("Error deleting key: " + key);
-            logger.warn(e);
-            return false;
-        }
+        //} catch (IOException e) {
+            //logger.warn("Error deleting key: " + key);
+            //logger.warn(e);
+            //return false;
+        //}
     }
 
     /**
@@ -261,7 +260,7 @@ public class FileIO {
      * @return Array of keys
      */
     public String[] keys(String prefix) {
-        logger.info("keys => " + prefix);
+        //logger.info("keys => " + prefix);
 
         File dir = baseDir();
         if (dir == null || !dir.exists()) 

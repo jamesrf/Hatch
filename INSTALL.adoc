@@ -1,0 +1,139 @@
+= Hatch Developer Install Documentation =
+
+== Build and Test Hatch Java Libs ==
+
+=== Windows ===
+    TODO
+
+=== Linux ===
+
+==== Download JDK 8 ====
+
+1. Go to 
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[oracle.com],
+accept the license, download the Linux .tar.gz file.
+
+2. Extract the file in the Hatch root directory and link it into place.
+
+[source,sh]
+-------------------------------------------------------------------------
+$ tar -zxf jdk*tar.gz
+$ ln -s jdk1.8* jdk1.8
+-------------------------------------------------------------------------
+
+NOTE: We may some day use openjdk, but its JavaFX libs are not ready
+for prime time as of writing.  
+
+==== Download org.json Java JSON Library ====
+
+[source,sh]
+-------------------------------------------------------------------------
+$ mkdir -p lib
+$ cd lib
+$ wget -O json-20160810.jar \
+    'https://search.maven.org/remotecontent?filepath=org/json/json/20160810/json-20160810.jar'
+$ cd ../
+-------------------------------------------------------------------------
+
+==== Compile Hatch Java ====
+
+===== Windows =====
+
+[source,sh]
+-------------------------------------------------------------------------
+C:\> hatch.bat compile
+-------------------------------------------------------------------------
+
+===== Linux =====
+
+[source,sh]
+-------------------------------------------------------------------------
+$ ./hatch.sh compile
+-------------------------------------------------------------------------
+
+==== Test Hatch Java ====
+
+Assuming the Java code compiles OK, this will run a series of tests.
+
+NOTE: print commands are disabled by default in the tests to avoid 
+unexpected printing, but they can be added by un-commenting 
+them in src/org/evergreen_ils/hatch/TestHatch.java and recompiling.
+
+===== Windows =====
+
+[source,sh]
+-------------------------------------------------------------------------
+C:\> hatch.bat test
+-------------------------------------------------------------------------
+
+===== Linux =====
+
+[source,sh]
+-------------------------------------------------------------------------
+$ ./hatch.sh test
+-------------------------------------------------------------------------
+
+== Configure Chrome for Native Messaging with Hatch ==
+
+=== Setup Chrome Extension ===
+
+NOTE: At time of writing, the Evergreen server used must have the
+patches included in the http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/user/berick/lp1640255-hatch-native-messaging[Hatch Native Messaging working branch].
+
+==== Install Chrome Extension ====
+
+. Open Chrome and navigate to chrome://extensions
+. Enable "Developer Mode" along the top right of the page.
+. Click the "Load Unpacked Extension..." button.
+. Load the directory at Hatch/extension/app
+
+===== Debugging The Chrome Extension =====
+
+ * Click the "Background Page" link to see the exension console.
+ * Use the "Reload" link to apply changes made to the extension 
+   (e.g. main.js).  
+ * See also https://developer.chrome.com/extensions/getstarted
+
+=== Setup Chrome Native Messaging Host ===
+
+See also https://developer.chrome.com/extensions/nativeMessaging
+
+==== Windows ====
+
+Edit extension/host/org.evergreen_ils.hatch.WINDOWS.json and change the 
+"path" value to match the location of your copy of "hatch.bat", found in the 
+root directory of the Hatch repository. 
+
+Create a Native Messaging registry key entry via the Windows command prompt.
+Modify the path value to point to your copy of 
+HATCH/extension/host/org.evergreen_ils.hatch.WINDOWS.json.
+
+[source,sh]
+-------------------------------------------------------------------------
+C:\> REG ADD "HKCU\Software\Google\Chrome\NativeMessagingHosts\org.evergreen_ils.hatch" /ve /t REG_SZ /d "C:\path\to\extension\host\org.evergreen_ils.hatch.WINDOWS.json" /f
+-------------------------------------------------------------------------
+
+==== Linux ====
+
+Edit extension/host/org.evergreen_ils.hatch.json and change the "path" 
+value to match the location of your copy of "hatch.sh", found in the root 
+directory of the Hatch repository. 
+
+Copy the host file into Chrome's configuration directory.
+
+For Chrome:
+
+[source,sh]
+-------------------------------------------------------------------------
+$ mkdir -p ~/.config/google-chrome/NativeMessagingHosts/
+$ cp extension/host/org.evergreen_ils.hatch.json ~/.config/google-chrome/NativeMessagingHosts/
+-------------------------------------------------------------------------
+
+For Chromium:
+
+[source,sh]
+-------------------------------------------------------------------------
+$ mkdir -p ~/.config/chromium/NativeMessagingHosts/
+$ cp extension/host/org.evergreen_ils.hatch.json ~/.config/chromium/NativeMessagingHosts/
+-------------------------------------------------------------------------
+

@@ -1,0 +1,9 @@
+{
+  "name": "org.evergreen_ils.hatch",
+  "description": "Hatch Native Messaging Host",
+  "path": "/path/to/hatch.sh",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
+  ]
+}
