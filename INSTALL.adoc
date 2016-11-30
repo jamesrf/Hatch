@@ -26,14 +26,17 @@ for prime time as of writing.
 
 ==== Download org.json Java JSON Library ====
 
-[source,sh]
--------------------------------------------------------------------------
-$ mkdir -p lib
-$ cd lib
-$ wget -O json-20160810.jar \
-    'https://search.maven.org/remotecontent?filepath=org/json/json/20160810/json-20160810.jar'
-$ cd ../
--------------------------------------------------------------------------
+===== Linux =====
+
+The org.json jar file is retrieved automatically when running
+'hatch.sh compile' (below).
+
+===== Windows =====
+
+1. Create a directory called "lib" inside the Hatch directory.
+2. Download the JSON jar file and put it into the "lib" directory:
+
+https://search.maven.org/remotecontent?filepath=org/json/json/20160810/json-20160810.jar
 
 ==== Compile Hatch Java ====
 

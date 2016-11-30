@@ -6,10 +6,19 @@ JAVA_HOME=jdk1.8
 JAVA=$JAVA_HOME/bin/java
 JAVAC=$JAVA_HOME/bin/javac
 LOGS=-Djava.util.logging.config.file=logging.properties
+JSON_BUILD="20160810"
+JSON_JAR="json-$JSON_BUILD.jar"
+JSON_URL="https://search.maven.org/remotecontent?filepath=org/json/json/$JSON_BUILD/$JSON_JAR"
 
 COMMAND="$1"
 
 if [ "$COMMAND" == "compile" ]; then
+
+    mkdir -p lib
+    if [ ! -f lib/$JSON_JAR ]; then
+        echo "Fetching JSON libs..."
+        wget -O lib/$JSON_JAR $JSON_URL
+    fi;
 
     $JAVAC -Xdiags:verbose -Xlint:unchecked \
         -cp lib:lib/\* -d lib src/org/evergreen_ils/hatch/*.java
