@@ -1,9 +1,17 @@
 = Hatch Developer Install Documentation =
 
+NOTE: This document describes steps for manually installing Hatch.  Windows 
+end-users should install Hatch via the Hatch Windows installer application.
+
 == Build and Test Hatch Java Libs ==
 
 === Windows ===
-    TODO
+
+1. Go to 
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[oracle.com],
+accept the license, download the Windows installer.
+
+2. Run the windows installer to install the JDK.
 
 === Linux ===
 
@@ -81,7 +89,7 @@ $ ./hatch.sh test
 === Setup Chrome Extension ===
 
 NOTE: At time of writing, the Evergreen server used must have the
-patches included in the http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/user/berick/lp1640255-hatch-native-messaging[Hatch Native Messaging working branch].
+patches included in the http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/user/berick/lp1646166-hatch-2.12-omnibus[Hatch 2.12 Omnibus Branch].
 
 ==== Install Chrome Extension ====
 
