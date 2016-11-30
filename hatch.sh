@@ -5,6 +5,7 @@
 JAVA_HOME=jdk1.8
 JAVA=$JAVA_HOME/bin/java
 JAVAC=$JAVA_HOME/bin/javac
+JAR=$JAVA_HOME/bin/jar
 LOGS=-Djava.util.logging.config.file=logging.properties
 JSON_BUILD="20160810"
 JSON_JAR="json-$JSON_BUILD.jar"
@@ -21,7 +22,11 @@ if [ "$COMMAND" == "compile" ]; then
     fi;
 
     $JAVAC -Xdiags:verbose -Xlint:unchecked \
-        -cp lib:lib/\* -d lib src/org/evergreen_ils/hatch/*.java
+        -cp lib/\* -d lib src/org/evergreen_ils/hatch/*.java
+
+    # Create a JAR file from the compiled class files them remove them.
+    $JAR cf lib/hatch.jar -C lib org
+    rm -r lib/org
 
 elif [ "$COMMAND" == "test" ]; then
 
@@ -29,12 +34,12 @@ elif [ "$COMMAND" == "test" ]; then
     # 2. Run Hatch and process messages emitted from #1.
     # 3. Run TestHatch in receive mode to log the responses.
 
-    $JAVA "$LOGS" -cp lib:lib/\* org.evergreen_ils.hatch.TestHatch \
-        | $JAVA "$LOGS" -cp lib:lib/\* org.evergreen_ils.hatch.Hatch \
-        | $JAVA "$LOGS" -cp lib:lib/\* org.evergreen_ils.hatch.TestHatch receive
+    $JAVA "$LOGS" -cp lib/\* org.evergreen_ils.hatch.TestHatch \
+        | $JAVA "$LOGS" -cp lib/\* org.evergreen_ils.hatch.Hatch \
+        | $JAVA "$LOGS" -cp lib/\* org.evergreen_ils.hatch.TestHatch receive
 
 else
 
     # run Hatch
-    $JAVA "$LOGS" -cp lib:lib/\* org.evergreen_ils.hatch.Hatch
+    $JAVA "$LOGS" -cp lib/\* org.evergreen_ils.hatch.Hatch
 fi;
