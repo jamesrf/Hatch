@@ -34,7 +34,32 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Main class for Hatch.
  *
- * TODO
+ * Data flow:
+ *
+ * 1. MessageIO::MessageReader thread reads messages on STDIN and queues
+ *    them for later processing by the RequestHandler thread.
+ *
+ * 2. RequestHandler thread collects and unpacks the request for processing.
+ *
+ * 2a. Non-print requests (e.g. file IO) are handled within the 
+ *     RequestHandler thread.
+ *
+ * 2a1. RequestHandler puts responses into the MessageIO::MessageWriter
+ *      outbound message queue.
+ *
+ * 2b. Print requests are added to the Hatch print request queue.
+ * 
+ * 2b1. The PrintRequestShuffler thread passes print requests from the
+ *      print request queue to the FX thread for future processing.
+ *
+ * 2b2. The FX thread renders and prints the HTML
+ *
+ * 2b3. The FX thread puts responses into the MessageIO::MessageWriter
+ *      outbound message queue (via PrintManager) once printing is 
+ *      complete.
+ *
+ * 3. MessageIO::MessageWriter pulls messages from the outbound queue
+ *    and writes them to STDOUT.
  *
  * Beware: On Mac OS, the "FX Application Thread" is renamed to 
  * "AppKit Thread" when the first call to print() or showPrintDialog() 
