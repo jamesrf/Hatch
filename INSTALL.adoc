@@ -103,6 +103,9 @@ patches included in the http://git.evergreen-ils.org/?p=working/Evergreen.git;a=
  * Click the "Background Page" link to see the exension console.
  * Use the "Reload" link to apply changes made to the extension 
    (e.g. main.js).  
+ * When the extension is loaded (or reloaded), it should show
+   "Connecting to native messaging host: org.evergreen_ils.hatch" 
+   in the Background Page console with no errors.
  * See also https://developer.chrome.com/extensions/getstarted
 
 === Setup Chrome Native Messaging Host ===
