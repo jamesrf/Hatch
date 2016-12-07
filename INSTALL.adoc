@@ -148,3 +148,28 @@ $ mkdir -p ~/.config/chromium/NativeMessagingHosts/
 $ cp extension/host/org.evergreen_ils.hatch.json ~/.config/chromium/NativeMessagingHosts/
 -------------------------------------------------------------------------
 
+== Using Hatch ==
+
+* In Chrome, navigate to the browser staff URL (https://HOSTNAME/eg/staff/).
+* Chrome should display a browser action icon along the top right of the
+  browser window (just left of the settings menu) with a letter "H".  
+  ** TODO: we can apply an icon of our choosing here during the install.
+* Clicking the "H" button should produce a security prompt, click through
+  to allow the requested permissions.
+* Reload the browser client login page.  
+* Open the Javascript console.  It should show messages like:
+
+[source,sh]
+-------------------------------------------------------------------------
+Loading Hatch relay content script
+...
+sending to Hatch: {"key":"eg.workstation.all","action":"get","msgid":1}
+Hatch responded to message ID 1
+-------------------------------------------------------------------------
+
+* See if Hatch is able to communicate with your printer...  Navigate to
+  https://HOSTNAME/eg/staff/admin/workstation/print/config
+* The "Select Printer" drop-down should show your printer(s).
+* The various printer attribute selectors should show values supported
+  by the selected printer.
+
