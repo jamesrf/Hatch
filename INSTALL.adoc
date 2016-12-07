@@ -72,15 +72,23 @@ them in src/org/evergreen_ils/hatch/TestHatch.java and recompiling.
 
 ===== Windows =====
 
+* Start with creating the default logging/Hatch data directory.
+* Then run the test code.
+
 [source,sh]
 -------------------------------------------------------------------------
+C:\> mkdir %userprofile%\.evergreen
 C:\> hatch.bat test
 -------------------------------------------------------------------------
 
 ===== Linux =====
 
+* Start with creating the default logging/Hatch data directory.
+* Then run the test code.
+
 [source,sh]
 -------------------------------------------------------------------------
+$ mkdir ~/.evergreen
 $ ./hatch.sh test
 -------------------------------------------------------------------------
 
