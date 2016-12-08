@@ -21,8 +21,12 @@
 
 console.debug('Loading Hatch relay content script');
 
-// Tell the page DOM we're here.
-document.body.setAttribute('hatch-is-open', '4-8-15-16-23-42');
+// document.body can be null in rare cases, e.g. quick page reload.
+if (document.body) {
+
+    // Tell the page DOM we're here.
+    document.body.setAttribute('hatch-is-open', '4-8-15-16-23-42');
+}
 
 /**
  * Open a port to our extension.
