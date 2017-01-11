@@ -2,7 +2,11 @@
 #
 # Linux/Mac Hatch Execution Script
 
-JAVA_HOME=jdk1.8
+# Use this for openjdk
+JAVA_HOME=/usr
+# Use this for local extract of Java libs
+#JAVA_HOME=jdk1.8
+
 JAVA=$JAVA_HOME/bin/java
 JAVAC=$JAVA_HOME/bin/javac
 JAR=$JAVA_HOME/bin/jar

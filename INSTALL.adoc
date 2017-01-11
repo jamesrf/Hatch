@@ -15,7 +15,15 @@ accept the license, download the Windows installer.
 
 === Linux ===
 
-==== Download JDK 8 ====
+==== Install OpenJDK 8 and OpenJFX ====
+
+[source,sh]
+-------------------------------------------------------------------------
+# Debian/Ubuntu version
+$ sudo apt-get install openjdk-8-jdk openjfx
+-------------------------------------------------------------------------
+
+==== Alternate: Install Oracle JDK 8 ====
 
 1. Go to 
 http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[oracle.com],
@@ -29,8 +37,13 @@ $ tar -zxf jdk*tar.gz
 $ ln -s jdk1.8* jdk1.8
 -------------------------------------------------------------------------
 
-NOTE: We may some day use openjdk, but its JavaFX libs are not ready
-for prime time as of writing.  
+3. Update the JAVA_HOME environment variable in hatch.sh to point
+   to the local Java extract:
+
+[source,sh]
+-------------------------------------------------------------------------
+JAVA_HOME=jdk1.8
+-------------------------------------------------------------------------
 
 ==== Download org.json Java JSON Library ====
 
