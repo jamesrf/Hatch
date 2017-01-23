@@ -16,6 +16,10 @@
 package org.evergreen_ils.hatch;
 
 import java.util.Map;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.*;
 import org.json.*;
 
@@ -79,6 +83,8 @@ public class Hatch extends Application {
         printRequestQueue = new LinkedBlockingQueue<JSONObject>();
 
     static final Logger logger = Logger.getLogger("org.evergreen_ils.hatch");
+
+    private static Properties configProps;
     
     /**
      * Printable region containing a browser.
@@ -168,6 +174,34 @@ public class Hatch extends Application {
             // RequestHandler already confirmed 'content' and 'contentType'
             // values exist.  No exceptions should occur here.
         }
+    }
+
+    /**
+     * Read the configuration properties file.
+     */
+    private static void readProps() {
+        if (configProps != null) return; // already loaded.
+        configProps = new Properties();
+        InputStream input = null;
+
+        try {
+            input = new FileInputStream("hatch.properties");
+            configProps.load(input);
+        } catch (IOException e) {
+            logger.warning("Unable to open Hatch properties file: " + e);
+        } finally {
+            if (input != null) {
+                try { input.close(); } catch (Exception e2) {}
+            }
+        }
+    }
+
+    /**
+     * Get values for configurable properties
+     */
+    public static String getProp(String name) {
+        readProps();
+        return configProps.getProperty(name);
     }
 
 

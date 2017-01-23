@@ -38,12 +38,23 @@ public class RequestHandler extends Thread {
         // Find the profile directory.
         // The profile directory + origin string represent the base 
         // directory for all file I/O for this session.
-        if (profileDirectory == null) { // TODO: make configurable
-            String home = System.getProperty("user.home");
-            profileDirectory = new File(home, ".evergreen").getPath();
+        if (profileDirectory == null) {
+
+            // first see if a value is set in the properties file.
+            profileDirectory = Hatch.getProp("data.directory");
+
             if (profileDirectory == null) {
-                logger.warning("Unable to set profile directory");
+                // otherwise set the directory to the users's home
+                // directory + .evergreen
+                String home = System.getProperty("user.home");
+                profileDirectory = new File(home, ".evergreen").getPath();
+
+                if (profileDirectory == null) {
+                    logger.warning("Unable to set profile directory");
+                }
             }
+
+            logger.info("Using data directory: " + profileDirectory);
         }
     }
 
