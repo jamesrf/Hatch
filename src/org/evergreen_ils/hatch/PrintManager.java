@@ -221,7 +221,7 @@ public class PrintManager {
         String orientationName = settings.optString("pageOrientation", null);
         String marginName = settings.optString("marginType", null);
 
-        if (paperName != null) {
+        if (paperName != null && !paperName.isEmpty()) {
             for (Paper source : printerAttrs.getSupportedPapers()) {
                 if (source.getName().equals(paperName)) {
                     logger.finer("Found matching paper: " + paperName);
@@ -231,7 +231,7 @@ public class PrintManager {
             }
         }
 
-        if (orientationName != null) {
+        if (orientationName != null && !orientationName.isEmpty()) {
             orientation = PageOrientation.valueOf(orientationName);
         }
 
@@ -239,7 +239,7 @@ public class PrintManager {
             // Using a pre-defined, automatic margin option
 
             Printer.MarginType margin = Printer.MarginType.DEFAULT;
-            if (marginName != null) {
+            if (marginName != null && !marginName.isEmpty()) {
                 // An auto-margin type has been specified
                 for (Printer.MarginType marg : Printer.MarginType.values()) {
                     if (marg.toString().equals(marginName)) {
@@ -277,34 +277,34 @@ public class PrintManager {
         PrinterAttributes printerAttrs = 
             job.getPrinter().getPrinterAttributes();
 
-        if (settings.has("collation")) {
-            jobSettings.setCollation(
-                Collation.valueOf(settings.getString("collation")));
+        String collation = settings.optString("collation", null);
+        if (collation != null && !collation.isEmpty()) {
+            jobSettings.setCollation(Collation.valueOf(collation));
         }
 
-        if (settings.has("copies")) {
-            jobSettings.setCopies(settings.getInt("copies"));
+        int copies = settings.optInt("copies");
+        if (copies > 0) {
+            jobSettings.setCopies(copies);
         }
 
-        if (settings.has("printColor")) {
-            jobSettings.setPrintColor(
-                PrintColor.valueOf(settings.getString("printColor")));
+        String printColor = settings.optString("printColor", null);
+        if (printColor != null && !printColor.isEmpty()) {
+            jobSettings.setPrintColor(PrintColor.valueOf(printColor));
         }
 
-        if (settings.has("printQuality")) {
-            jobSettings.setPrintQuality(
-                PrintQuality.valueOf(settings.getString("printQuality")));
+        String printQuality = settings.optString("printColor", null);
+        if (printQuality != null && !printQuality.isEmpty()) {
+            jobSettings.setPrintQuality(PrintQuality.valueOf(printQuality));
         }
 
-        if (settings.has("printSides")) {
-            jobSettings.setPrintSides(
-                PrintSides.valueOf(settings.getString("printSides")));
-
+        String printSides = settings.optString("printColor", null);
+        if (printSides != null && !printSides.isEmpty()) {
+            jobSettings.setPrintSides(PrintSides.valueOf(printSides));
         }
 
         String paperSource = settings.optString("paperSource");
 
-        if (paperSource != null) {
+        if (paperSource != null && !paperSource.isEmpty()) {
             for (PaperSource source : printerAttrs.getSupportedPaperSources()) {
                 if (source.getName().equals(paperSource)) {
                     logger.finer("Found paper source: " + paperSource);
