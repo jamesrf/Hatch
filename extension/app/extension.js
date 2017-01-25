@@ -118,7 +118,8 @@ function setPageActionRules() {
                             pathPrefix : '/eg/staff/',
                             schemes : ['https']
                         },
-                        css: ["eg-navbar"] // match on <eg-navbar/>
+                        // match <body hatch-is-welcome-here>...
+                        css: ["body[hatch-is-welcome-here]"]
                     })
                 ],
                 actions: [ 
