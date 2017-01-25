@@ -1,4 +1,6 @@
-jdk*
-jetty*
 lib/
 
+*.exe
+*.zip
+*.dmg
+*.app

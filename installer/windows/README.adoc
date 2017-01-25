@@ -1,0 +1,135 @@
+[[hatch---java-print-storage-etc-service]]
+Hatch - Java Print / Storage / Etc Service
+------------------------------------------
+
+[[hatch-download-sources]]
+Hatch Download sources
+^^^^^^^^^^^^^^^^^^^^^^
+
+http://git.evergreen-ils.org/?p=working/Hatch.git;a=summary
+
+[[requirements]]
+Requirements
+~~~~~~~~~~~~
+
+1.  NSIS
+3.  JDK or OpenJDK v. 1.8 or higher
+
+[[pre-installation]]
+Pre-Installation
+~~~~~~~~~~~~~~~~
+
+[[compiling-hatch]]
+Compiling Hatch
+^^^^^^^^^^^^^^^
+
+Before installing, Hatch will need to be properly compiled.
+
+Windows:
+++++++++
+
+....
+C:\> hatch.bat compile
+....
+
+Linux:
+++++++
+
+....
+$ ./hatch.sh compile
+....
+
+More detail on this process and testing it can be found in
+INSTALL.adoc.
+
+
+[[adding-contact-information]]
+Adding Contact Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Contact Information will be found when a user views the Add/Remove
+Programs tool in Windows in order to uninstall or view the information
+of an installed program. This information usually consists of an Email,
+a URL for updates, and a URL for a description of the program. To set
+these, you’ll have to edit defines.nsh, and edit the following fields:
+
+....
+!define HELPURL "mailto:[your@email.here]"
+!define UPDATEURL "http://..."
+!define ABOUTURL "http://..."
+....
+
+[[updating-version-number]]
+Updating Version Number
+^^^^^^^^^^^^^^^^^^^^^^^
+
+As with above, there may be times you want Hatch to install with a new
+version number. In Defines.nsh, edit the following fields:
+
+....
+!define VERSIONMAJOR 2
+!define VERSIONMINOR 0
+!define VERSIONBUILD 0
+....
+
+[[compile-installer]]
+Compile Installer
+^^^^^^^^^^^^^^^^^
+
+[[windows]]
+Windows:
+++++++++
+
+1.  Right click hatch.nsi -> Compile NSIS Script
+2.  Run the generated installer
+
+[[linux]]
+Linux:
+++++++
+
+1.  Install NSIS if not already present on your system.
++
+....
+sudo apt-get install nsis
+....
+
+2.  Navigate to the hatch repo and compile the installer
++
+....
+cd ~/Hatch
+makensis installer/windows/hatch.nsi
+....
+
+[[running-hatch]]
+Running Hatch
+~~~~~~~~~~~~~
+
+1.  Once installed, open Chrome and navigate to chrome://extensions
+2.  Ensure Developer Mode is ticked, and select ``Load Unpacked
+Extensions''
+3.  Select [Installation Directory]/extension/app/.
+4.  In Chrome, navigate to the browser staff URL
+(https://HOSTNAME/eg/staff/).
+5.  Chrome should display a browser action icon along the top right of
+the +
+browser window (just left of the settings menu) with a letter ``H''. +
+** TODO: we can apply an icon of our choosing here during the install.
+6.  Clicking the ``H'' button should produce a security prompt, click
+through +
+to allow the requested permissions.
+7.  Reload the browser client login page.
+8.  Open the Javascript console. It should show messages like:
+
+....
+Loading Hatch relay content script
+...
+sending to Hatch: {"key":"eg.workstation.all","action":"get","msgid":1}
+Hatch responded to message ID 1
+....
+
+1.  See if Hatch is able to communicate with your printer… Navigate to +
+https://HOSTNAME/eg/staff/admin/workstation/print/config
+2.  The ``Select Printer'' drop-down should show your printer(s).
+3.  The various printer attribute selectors should show values
+supported +
+by the selected printer.
