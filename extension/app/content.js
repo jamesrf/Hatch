@@ -18,14 +18,16 @@
  * Relays messages between the browser tab and the Hatch extension.js
  * script.
  */
-
 console.debug('Loading Hatch relay content script');
 
-// document.body can be null in rare cases, e.g. quick page reload.
-if (document.body) {
-
+// Insert our calling card in the document.  This script loads before the 
+// DOM is rendered.  The root documentElement is the only thing we can 
+// attach to.
+if (document.documentElement) {
     // Tell the page DOM we're here.
-    document.body.setAttribute('hatch-is-open', '4-8-15-16-23-42');
+    document.documentElement.setAttribute('hatch-is-open', '4-8-15-16-23-42');
+} else {
+    console.warn("No document.documentElement exist, Hatch cannot open");
 }
 
 /**
@@ -37,12 +39,6 @@ var port = chrome.runtime.connect();
  * Relay all messages received from the extension back to the tab
  */
 port.onMessage.addListener(function(message) {
-
-    /*
-    console.debug(
-        "Content script received from extension: "+ JSON.stringify(message));
-    */
-
     window.postMessage(message, location.origin);
 });
 
@@ -62,15 +58,9 @@ window.addEventListener("message", function(event) {
     // received from our browser tab/page.
     if (message.from != 'page') return;
 
-    /* 
-    console.debug(
-        "Content script received from page: " + JSON.stringify(message));
-    */
-
     // standard Hatch-bound message; relay to extension.
     port.postMessage(message);
 
 }, false);
-
 
 

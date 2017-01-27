@@ -106,50 +106,6 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
 });
 
-
-function setPageActionRules() {
-    // Replace all rules on extension reload
-    chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-        chrome.declarativeContent.onPageChanged.addRules([
-            {
-                conditions: [
-                    new chrome.declarativeContent.PageStateMatcher({
-                        pageUrl : {
-                            pathPrefix : '/eg/staff/',
-                            schemes : ['https']
-                        },
-                        // match <body hatch-is-welcome-here>...
-                        css: ["body[hatch-is-welcome-here]"]
-                    })
-                ],
-                actions: [ 
-                    new chrome.declarativeContent.RequestContentScript({
-                        'js': ['content.js']
-                    })
-                ]
-            }
-        ]);
-    });
-}
-
-chrome.browserAction.onClicked.addListener(function (tab) {
-    chrome.permissions.request({
-        origins: ['https://*/eg/staff/*']
-    }, function (ok) {
-        if (ok) {
-            console.log('access granted');
-        } else if (chrome.runtime.lastError) {
-            alert('Permission Error: ' + chrome.runtime.lastError.message);
-        } else {
-            alert('Optional permission denied.');
-        }
-    });
-});
-
-
-// Link the page action icon to loading the content script
-chrome.runtime.onInstalled.addListener(setPageActionRules);
-
 // Connect to Hatch on startup.
 connectToHatch();
 

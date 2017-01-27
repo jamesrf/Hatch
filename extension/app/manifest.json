@@ -8,15 +8,18 @@
   "background" : {
     "scripts" : ["extension.js"]
   },
+  "content_scripts": [
+    {
+      "matches": ["https://*/eg/staff/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
   "browser_action": {
     "default_title": "Hatch"
   },
   "permissions": [
-    "nativeMessaging",
-    "declarativeContent"
-  ],
-  "optional_permissions": [
-    "https://*/eg/staff/*"
+    "nativeMessaging"
   ],
   "minimum_chrome_version": "38"
 }
