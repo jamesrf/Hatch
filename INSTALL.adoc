@@ -99,12 +99,6 @@ patches included in the
 http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/user/berick/lp1646166-hatch-2.12-omnibus[Hatch 2.12 Omnibus Branch].
 
 * In Chrome, navigate to the browser staff URL (https://HOSTNAME/eg/staff/).
-* Chrome should display a browser action icon along the top right of the
-  browser window (just left of the settings menu) with a letter "H".  
-  ** TODO: we can apply an icon of our choosing here during the install.
-* Clicking the "H" button should produce a security prompt, click through
-  to allow the requested permissions.
-* Reload the browser client login page.  
 * Open the Javascript console.  It should show messages like:
 
 [source,sh]
@@ -112,6 +106,7 @@ http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/us
 Loading Hatch relay content script
 ...
 sending to Hatch: {"key":"eg.workstation.all","action":"get","msgid":1}
+...
 Hatch responded to message ID 1
 -------------------------------------------------------------------------
 
