@@ -292,7 +292,7 @@ public class PrintManager {
             jobSettings.setPrintColor(PrintColor.valueOf(printColor));
         }
 
-        String printQuality = settings.optString("printColor", null);
+        String printQuality = settings.optString("printQuality", null);
         if (printQuality != null && !printQuality.isEmpty()) {
             jobSettings.setPrintQuality(PrintQuality.valueOf(printQuality));
         }
