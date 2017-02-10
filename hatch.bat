@@ -1,10 +1,18 @@
 @echo off
 REM Windows Hatch Execution Script
 REM @echo off required for STDIO to work with the browser.
-SET JAVA_HOME="C:\Program Files\Java\jdk1.8.0_111"
-SET JAVA=%JAVA_HOME%\bin\java
-SET JAVAC=%JAVA_HOME%\bin\javac
-SET JAR=%JAVA_HOME%\bin\jar
+
+REM Assume java executables are in our path
+SET JAVA=java
+SET JAVAC=javac
+SET JAR=jar
+
+REM Optionally override the java path
+REM SET JAVA_HOME="C:\Program Files\Java\jdk1.8.0_111"
+REM SET JAVA=%JAVA_HOME%\bin\java
+REM SET JAVAC=%JAVA_HOME%\bin\javac
+REM SET JAR=%JAVA_HOME%\bin\jar
+
 
 IF "%1" == "compile" (
 
