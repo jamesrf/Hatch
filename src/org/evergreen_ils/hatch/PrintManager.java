@@ -297,7 +297,7 @@ public class PrintManager {
             jobSettings.setPrintQuality(PrintQuality.valueOf(printQuality));
         }
 
-        String printSides = settings.optString("printColor", null);
+        String printSides = settings.optString("printSides", null);
         if (printSides != null && !printSides.isEmpty()) {
             jobSettings.setPrintSides(PrintSides.valueOf(printSides));
         }
