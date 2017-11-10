@@ -5,6 +5,11 @@
   "version": "1.0",
   "manifest_version": 2,
   "description": "Relays messages to/from Hatch.",
+  "icons": { 
+    "16":  "hatch_icon_16.png",
+    "48":  "hatch_icon_48.png",
+    "128": "hatch_icon_128.png" 
+  },
   "background" : {
     "scripts" : ["extension.js"]
   },
