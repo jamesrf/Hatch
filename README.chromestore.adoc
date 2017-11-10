@@ -1,0 +1,26 @@
+== Updating the Exstension On The Chrome Store ==
+
+=== Bump Version Numbers ===
+
+1. Modify the "version" string in extension/app/manifest.json
+
+2. Modify the VERSION* values in installer/windows/defines.nsh
+
+=== Create the app bundle ===
+
+[souce,sh]
+-------------------------------------------------------------------
+cd extension/app/
+zip hatch-extension.zip *
+-------------------------------------------------------------------
+
+=== Upload The Extension Files ===
+
+1. Log in with user chromestore@evergreen-ils.org to the 
+https://chrome.google.com/webstore/developer/dashboard[Chrome developer dashboard]
+
+2. Choose the "Edit" option next to "Hatch Native Messenger".
+
+3. Click the "Upload Updated Package" button and select your new 
+   hatch-extension.zip file.
+

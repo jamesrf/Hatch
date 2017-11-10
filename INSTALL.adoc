@@ -51,21 +51,20 @@ $ ./hatch.sh test
 
 == Install Chrome Extension [Windows & Linux] ==
 
-. Open Chrome/Chromium and navigate to chrome://extensions
-. Enable "Developer Mode" along the top right of the page.
-. Click the "Load Unpacked Extension..." button.
-. Load the directory at Hatch => extension => app
-.. In Windows, the default location for the app directory will be
-   C:\Program Files (x86)\Hatch\extension\app
+. Install the exenstion directly in the browser from the 
+https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl[Chrome App Store]
 
 === Optional: Debugging The Chrome Extension ===
 
+ * Navigate to chrome://extensions
+ * Enable "Developer Mode" along the top right of the page.
  * Click the "Background Page" link to see the exension console.
  * When the extension is loaded (or reloaded), it should show
    "Connecting to native messaging host: org.evergreen_ils.hatch" 
    in the Background Page console with no errors.
  * Use the "Reload" link to apply local changes made to the 
-   extension (e.g. main.js).  
+   extension (e.g. main.js).  (This might only work when installing
+   the exention manually via developer mode tools).
  * See also https://developer.chrome.com/extensions/getstarted
 
 === Linux: Configure Native Messaging ===
@@ -93,10 +92,6 @@ $ cp extension/host/org.evergreen_ils.hatch.json ~/.config/chromium/NativeMessag
 -------------------------------------------------------------------------
 
 == Using Hatch ==
-
-NOTE: At time of writing, the Evergreen server used must have the
-patches included in the 
-http://git.evergreen-ils.org/?p=working/Evergreen.git;a=shortlog;h=refs/heads/user/berick/lp1646166-hatch-2.12-omnibus[Hatch 2.12 Omnibus Branch].
 
 * In Chrome, navigate to the browser staff URL (https://HOSTNAME/eg/staff/).
 * Open the Javascript console.  It should show messages like:

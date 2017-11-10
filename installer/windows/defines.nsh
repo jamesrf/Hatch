@@ -13,8 +13,8 @@
 ; Version info
 ; Version numbers should be integers
 !define VERSIONMAJOR 0
-!define VERSIONMINOR 0
-!define VERSIONBUILD 1
+!define VERSIONMINOR 1
+!define VERSIONBUILD 2
 !define FULLVERSION "${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}"
 ;---------------------------
 ; Add Remove info
