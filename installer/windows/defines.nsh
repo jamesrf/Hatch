@@ -7,14 +7,14 @@
 !define APPNAME "Hatch" 
 !define COMPANYNAME "Evergreen ILS"
 !define DESCRIPTION "Java based Print Service and Local Storage System"
-!define EXTENSIONID "knldjmfmopnpolahpmmgbagdohdnhkik" ;Chrome extension id
-!define EXTENSION_UPDATEURL "" ;Chrome web store link
+!define EXTENSIONID "ppooibdipmklfichpmkcgplfgdplgahl" ;Chrome extension id
+!define EXTENSION_UPDATEURL "https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl" ;Chrome web store link
 ;-----------------------------------
 ; Version info
 ; Version numbers should be integers
-!define VERSIONMAJOR 2
-!define VERSIONMINOR 1
-!define VERSIONBUILD 0
+!define VERSIONMAJOR 0
+!define VERSIONMINOR 0
+!define VERSIONBUILD 1
 !define FULLVERSION "${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}"
 ;---------------------------
 ; Add Remove info
