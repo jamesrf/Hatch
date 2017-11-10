@@ -4,6 +4,6 @@
   "path": "/path/to/hatch.sh",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
+    "chrome-extension://ppooibdipmklfichpmkcgplfgdplgahl/"
   ]
 }
