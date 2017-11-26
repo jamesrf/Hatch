@@ -7,8 +7,8 @@
 !define APPNAME "Hatch" 
 !define COMPANYNAME "Evergreen ILS"
 !define DESCRIPTION "Java based Print Service and Local Storage System"
-!define EXTENSIONID "ppooibdipmklfichpmkcgplfgdplgahl" ;Chrome extension id
-!define EXTENSION_UPDATEURL "https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl" ;Chrome web store link
+!define EXTENSIONID "ppooibdipmklfichpmkcgplfgdplgahl" ; Chrome extension id
+!define EXTENSION_UPDATEURL "https://clients2.google.com/service/update2/crx" ; Chrome Web Store Autoupdate URL
 ;-----------------------------------
 ; Version info
 ; Version numbers should be integers
@@ -20,9 +20,10 @@
 ; Add Remove info
 ; The following will be displayed by the "Click here for support information" link
 ; in Add/Remove Programs.  You can use mailto: links here.
-!define HELPURL "mailto:[your@email.here]"
-!define UPDATEURL "http://..."
-!define ABOUTURL "http://..."
+; Unless there's real info, leave these blank. The registry keys will be skipped if they're blank
+!define HELPURL ""
+!define UPDATEURL ""
+!define ABOUTURL ""
 ; The size in KB of all the files we'll be installing
 !define INSTALLSIZE 332000
 

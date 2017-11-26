@@ -24,6 +24,7 @@
 !include StrRep.nsh
 !include ReplaceInFile.nsh
 ;---------------------------------------------------------------
+
 ; Installer's filename
 Outfile "${APPNAME} Installer.exe"
 RequestExecutionLevel admin
@@ -36,72 +37,121 @@ Name "${APPNAME}"
 ;==================================
 ; Page system
 !insertmacro MUI_PAGE_WELCOME
-!define MUI_PAGE_CUSTOMFUNCTION_PRE VersionChecker
+!define MUI_PAGE_CUSTOMFUNCTION_PRE ValidateInstall
 !insertmacro MUI_PAGE_LICENSE "license.rtf" ;Loads licence.rtf to show license content
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
+
 ;-------------------------------------
 ; Code to verify if a user is an admin
 !macro VerifyUserIsAdmin
 UserInfo::GetAccountType
 pop $0
 ${If} $0 != "admin" ;Require admin rights
-    messageBox mb_iconstop "Administrator rights required!"
+    messageBox MB_OK|MB_ICONSTOP "Administrator rights required!"
     setErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
     quit
 ${EndIf}
 !macroend
 
-;---------------------------------------------------------------------
-; 1. Check for Java
-; 2. Read our current version and check if it's newer, older, or the same
-; LogicLib gives S>, S<, and S== for comparing strings.
-!macro VersionCheck
-    ;JRE Check
-    ClearErrors
-    ${if} ${RunningX64}
-        SetRegView 64 ;So we can read the Registry of 64 bit devices
-    ${endif}
-    ReadRegStr $R0 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
-    ReadRegStr $R1 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment\$R0" "JavaHome"
-    IfErrors 0  NoAbort
-        MessageBox MB_OK "Java not detected.  Setup will now exit."
-        Quit
-    NoAbort:
-        ${If} $R0 S< ${JRE_MIN_VERSION}
-            MessageBox MB_OK "You must update Java.  Setup will now exit."
-        ${EndIf}
-        ; Hatch Version Check
-        ReadRegStr $R2 HKCU "Software\${COMPANYNAME}\${APPNAME}" "Version"
-        ${If} $R2 = 0
-            Goto INSTALL ;As you were, citizen.
-        ${ElseIf} $R2 S== ${FULLVERSION} ;Same version is installed
-            MessageBox MB_OKCANCEL|MB_ICONSTOP "You already have this version of ${APPNAME} installed.  You must uninstall the currently installed version to continue." IDOK UNINSTALL IDCANCEL QUIT
-        ${ElseIf} $R2 S> ${FULLVERSION} ;Older version is installed
-            MessageBox MB_OKCANCEL|MB_ICONSTOP "You are tring to install an older version of ${APPNAME} than the one you currently have installed. You must uninstall the currently installed verion to continue." IDOK UNINSTALL IDCANCEL QUIT
-        ${ElseIf} $R2 S< ${FULLVERSION} ;Newer version is installed
-            MessageBox MB_OKCANCEL|MB_ICONSTOP "You have a previous version of ${APPNAME} installed. You must uninstall the currently installed version to continue." IDOK UNINSTALL IDCANCEL QUIT
-        ${EndIf}
-        UNINSTALL:
-            ExecWait '"$INSTDIR\Uninstall ${APPNAME}.exe"_?=$INSTDIR'
-            Goto INSTALL
-        QUIT:
-            Quit
-        INSTALL:
+; Find any installed JRE/JDK and return the version or -1
+Function DetectJava
+    ; 32 bit JRE >= 9
+    ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\JRE" "CurrentVersion"
+    StrCmp $0 "" +1 Found
 
-!macroend
+    ; 32 bit JDK >= 9
+    ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\JDK" "CurrentVersion"
+    StrCmp $0 "" +1 Found
+
+    ; 64 bit JRE >= 9
+    ${If} ${RunningX64}
+        SetRegView 64
+        ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\JRE" "CurrentVersion"
+        SetRegView 32 ; basically SetRegView Default since NSIS only creates 32 bit installers
+        StrCmp $0 "" +1 Found
+    ${EndIf}
+
+    ; 64 bit JDK >= 9
+    ${If} ${RunningX64}
+        SetRegView 64
+        ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\JDK" "CurrentVersion"
+        SetRegView 32
+        StrCmp $0 "" +1 Found
+    ${EndIf}
+
+    ; 32 bit JRE < 9
+    ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
+    StrCmp $0 "" +1 Found
+
+    ; 32 bit JDK < 9
+    ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\Java Development Kit" "CurrentVersion"
+    StrCmp $0 "" +1 Found
+
+    ; 64 bit JRE < 9
+    ${If} ${RunningX64}
+        SetRegView 64
+        ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
+        SetRegView 32
+        StrCmp $0 "" +1 Found
+    ${EndIf}
+
+    ; 64 bit JDK < 9
+    ${If} ${RunningX64}
+        SetRegView 64
+        ReadRegStr $0 HKLM "SOFTWARE\JavaSoft\Java Development Kit" "CurrentVersion"
+        SetRegView 32
+        StrCmp $0 "" +1 Found
+    ${EndIf}
+
+    ; Nuthin.
+    Push "-1"
+    Return
+
+    Found:
+    Push $0
+    Return
+FunctionEnd
 
 function .onInit
     setShellVarContext all
     !insertmacro VerifyUserIsAdmin
+    Return
 functionEnd
+
 ;-----------------
 ;Check our version
-function VersionChecker
-    !insertmacro VersionCheck
+function ValidateInstall
+    Call DetectJava
+    Pop $0
+    StrCmp $0 "-1" NoJava
+    ${If} $0 S< ${JRE_MIN_VERSION}
+        MessageBox MB_OK "Please update Java to version ${JRE_MIN_VERSION} or higher. Setup will now exit." /SD IDOK IDOK QUIT
+    ${EndIf}
+    ; Hatch Version Check
+    ReadRegStr $1 HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}" "Version"
+    StrCmp $1 "" INSTALL
+    ${If} $1 S== ${FULLVERSION} ;Same version is installed
+        MessageBox MB_OKCANCEL|MB_ICONINFORMATION "You already have this version of ${APPNAME} installed.  You must uninstall the currently installed version to continue." /SD IDOK IDOK UNINSTALL IDCANCEL QUIT
+    ${ElseIf} $1 S> ${FULLVERSION} ;Older version is installed
+        MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "You are tring to install an older version of ${APPNAME} than the one you currently have installed. You must uninstall the currently installed verion to continue." /SD IDOK IDOK UNINSTALL IDCANCEL QUIT
+    ${ElseIf} $1 S< ${FULLVERSION} ;Newer version is installed
+        MessageBox MB_OKCANCEL|MB_ICONINFORMATION "You have a previous version of ${APPNAME} installed. The previous version will be uninrtalled so installation can continue." /SD IDOK IDOK UNINSTALL IDCANCEL QUIT
+    ${EndIf}
+    UNINSTALL:
+        ReadRegStr $1 HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}" "Install Path"
+        ; This leaves the uninstaller behind because it doesn't copy itself to a temp location. There's not a good way to clean that up that doesn't introduce potential race conditions on slow machines. :-/
+        ExecWait '"$1\Uninstall ${APPNAME}.exe" /S _?=$1'
+        Goto INSTALL
+    NoJava:
+        MessageBox MB_OK|MB_ICONSTOP "Java Not Detected. Please install a JRE of version ${JRE_MIN_VERSION} or greater." /SD IDOK
+    QUIT:
+        Quit
+    INSTALL:
+        Return
 functionEnd
 
 ;--------------------------
@@ -127,32 +177,32 @@ section "install"
     writeUninstaller "$INSTDIR\Uninstall ${APPNAME}.exe"
 
     ; Registry info for Add/Remove Programs
-    WriteRegStr HKCU "Software\${COMPANYNAME}\${APPNAME}" "Install Path" $INSTDIR
-    WriteRegStr HKCU "Software\${COMPANYNAME}\${APPNAME}" "Version" "${FULLVERSION}"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${COMPANYNAME} - ${APPNAME} - ${DESCRIPTION}"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$INSTDIR\Uninstall ${APPNAME}.exe$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "QuietUninstallString" "$\"$INSTDIR\Uninstall ${APPNAME}.exe$\" /S"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "InstallLocation" "$\"$INSTDIR$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ ${APPNAME}" "DisplayIcon" "$\"$INSTDIR\logo.ico$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "Publisher" "$\"${COMPANYNAME}$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "$\"${HELPURL}$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLUpdateInfo" "$\"${UPDATEURL}$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "$\"${ABOUTURL}$\""
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "$\"${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}$\""
-    WriteRegStr HKCU "Software\Google\Chrome\NativeMessagingHosts\org.evergreen_ils.hatch" "" "$INSTDIR\extension\host\org.evergreen_ils.hatch.json"
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "VersionMajor" ${VERSIONMAJOR}
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "VersionMinor" ${VERSIONMINOR}
+    WriteRegStr HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}" "Install Path" $INSTDIR
+    WriteRegStr HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}" "Version" "${FULLVERSION}"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${COMPANYNAME} - ${APPNAME} - ${DESCRIPTION}"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$INSTDIR\Uninstall ${APPNAME}.exe"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "QuietUninstallString" "$INSTDIR\Uninstall ${APPNAME}.exe /S"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "InstallLocation" "$INSTDIR"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayIcon" "$INSTDIR\logo.ico"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "Publisher" "${COMPANYNAME}"
+    StrCmp "${HELPURL}" "" +2
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "${HELPURL}"
+    StrCmp "${UPDATEURL}" "" +2
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLUpdateInfo" "${UPDATEURL}"
+    StrCmp "${ABOUTURL}" "" +2
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "URLInfoAbout" "${ABOUTURL}"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}"
+    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "VersionMajor" ${VERSIONMAJOR}
+    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "VersionMinor" ${VERSIONMINOR}
     # There is no option for modifying or repairing the install
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" 1
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" 1
+    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" 1
+    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" 1
     # Set the INSTALLSIZE constant (!defined at the top of this script) so Add/Remove Programs can accurately report the size
-    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "EstimatedSize" ${INSTALLSIZE}
+    WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "EstimatedSize" ${INSTALLSIZE}
 
-    ;Uncommend when extension is on web store
-    ;${if} ${RunningX64}
-        ;WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${EXTENSIONID}" "update_url" "${EXTENSION_UPDATEURL}"
-    ;${EndIf}
-    ;WriteRegStr HKLM "Software\Google\Chrome\Extensions\${EXTENSIONID}" "update_url" "${EXTENSION_UPDATEURL}"
+    ; Connect Hatch to Chrome and install the Hatch extension from the Chrome Web Store
+    WriteRegStr HKLM "SOFTWARE\Google\Chrome\NativeMessagingHosts\org.evergreen_ils.hatch" "" "$INSTDIR\extension\host\org.evergreen_ils.hatch.json"
+    WriteRegStr HKLM "Software\Google\Chrome\Extensions\${EXTENSIONID}" "update_url" "${EXTENSION_UPDATEURL}"
 SectionEnd
 
 
@@ -163,7 +213,7 @@ function un.onInit
     SetShellVarContext all
     
     # Verify uninstaller
-    MessageBox MB_OKCANCEL "Permanently remove ${APPNAME}?" IDOK next
+    MessageBox MB_OKCANCEL "Permanently remove ${APPNAME}?" /SD IDOK IDOK next
         Abort
     next:
     !insertmacro VerifyUserIsAdmin
@@ -171,23 +221,32 @@ functionEnd
 
 section "uninstall"    
     # Remove the actual files
-    delete $INSTDIR\*.*
-    rmDir /r $INSTDIR\extension
-    rmDir /r $INSTDIR\lib
+    Delete /REBOOTOK $INSTDIR\hatch.bat
+    Delete /REBOOTOK $INSTDIR\hatch.properties
+    Delete /REBOOTOK $INSTDIR\logging.properties
+    ; blindly using /r isn't ideal but the extreme unlikelyhood of there being \lib or \extension folders under $PROGRAMFILES makes it low risk.
+    RmDir /r /REBOOTOK $INSTDIR\extension
+    RmDir /r /REBOOTOK $INSTDIR\lib
     # Delete uninstaller last
-    delete "$INSTDIR\Uninstall ${APPNAME}.exe"
+    Delete /REBOOTOK "$INSTDIR\Uninstall ${APPNAME}.exe"
     
     # Remove installation directory
-    rmDir $INSTDIR\
+    RmDir /REBOOTOK $INSTDIR
     
     # Remove uninstaller info from registry
-    DeleteRegKey HKCU "Software\${COMPANYNAME}\${APPNAME}"
-    DeleteRegKey HKCU "Software\${COMPANYNAME}"
-    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
-    DeleteRegKey HKCU "Software\Google\Chrome\NativeMessagingHosts\org.evergreen_ils.hatch"
-    DeleteRegKey HKLM "Software\Google\Chrome\Extensions\${EXTENSIONID}"
-    ${if} ${RunningX64}
-        DeleteRegKey HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${EXTENSIONID}"
+    DeleteRegKey HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}"
+    DeleteRegKey HKLM "SOFTWARE\${COMPANYNAME}"
+    DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
+    DeleteRegKey HKLM "SOFTWARE\Google\Chrome\NativeMessagingHosts\org.evergreen_ils.hatch"
+    DeleteRegKey HKLM "SOFTWARE\Google\Chrome\Extensions\${EXTENSIONID}"
+    ${If} ${RunningX64}
+        DeleteRegKey HKLM "SOFTWARE\Wow6432Node\Google\Chrome\Extensions\${EXTENSIONID}"
     ${EndIf}
+
+    IfRebootFlag 0 Done
+    MessageBox MB_YESNO "A reboot is required to finish the installation. Do you wish to reboot now?" /SD IDNO IDNO Done
+    Reboot
+
+    Done:
     
 sectionEnd
