@@ -143,8 +143,10 @@ function ValidateInstall
     ${EndIf}
     UNINSTALL:
         ReadRegStr $1 HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}" "Install Path"
-        ; This leaves the uninstaller behind because it doesn't copy itself to a temp location. There's not a good way to clean that up that doesn't introduce potential race conditions on slow machines. :-/
-        ExecWait '"$1\Uninstall ${APPNAME}.exe" /S _?=$1'
+        ; Manually copying the uninstaller like this allows the use of the _? param which is required for ExecWait while also allowing all files to be deleted.
+        CopyFiles /SILENT "$1\Uninstall ${APPNAME}.exe" "$TEMP\Uninstall ${APPNAME}.exe"
+        ExecWait '"$TEMP\Uninstall ${APPNAME}.exe" /S _?=$1'
+        Delete /REBOOTOK "$TEMP\Uninstall ${APPNAME}.exe"
         Goto INSTALL
     NoJava:
         MessageBox MB_OK|MB_ICONSTOP "Java Not Detected. Please install a JRE of version ${JRE_MIN_VERSION} or greater." /SD IDOK
@@ -221,17 +223,17 @@ functionEnd
 
 section "uninstall"    
     # Remove the actual files
-    Delete /REBOOTOK $INSTDIR\hatch.bat
-    Delete /REBOOTOK $INSTDIR\hatch.properties
-    Delete /REBOOTOK $INSTDIR\logging.properties
+    Delete /REBOOTOK "$INSTDIR\hatch.bat"
+    Delete /REBOOTOK "$INSTDIR\hatch.properties"
+    Delete /REBOOTOK "$INSTDIR\logging.properties"
     ; blindly using /r isn't ideal but the extreme unlikelyhood of there being \lib or \extension folders under $PROGRAMFILES makes it low risk.
-    RmDir /r /REBOOTOK $INSTDIR\extension
-    RmDir /r /REBOOTOK $INSTDIR\lib
+    RmDir /r /REBOOTOK "$INSTDIR\extension"
+    RmDir /r /REBOOTOK "$INSTDIR\lib"
     # Delete uninstaller last
     Delete /REBOOTOK "$INSTDIR\Uninstall ${APPNAME}.exe"
     
     # Remove installation directory
-    RmDir /REBOOTOK $INSTDIR
+    RmDir /REBOOTOK "$INSTDIR"
     
     # Remove uninstaller info from registry
     DeleteRegKey HKLM "SOFTWARE\${COMPANYNAME}\${APPNAME}"
