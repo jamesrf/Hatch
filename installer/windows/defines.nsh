@@ -14,7 +14,7 @@
 ; Version numbers should be integers
 !define VERSIONMAJOR 0
 !define VERSIONMINOR 1
-!define VERSIONBUILD 2
+!define VERSIONBUILD 3
 !define FULLVERSION "${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}"
 ;---------------------------
 ; Add Remove info
