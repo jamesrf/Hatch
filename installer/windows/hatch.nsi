@@ -25,8 +25,11 @@
 !include ReplaceInFile.nsh
 ;---------------------------------------------------------------
 
+; Add local copy of AccessControl plugin
+!addplugindir .
+
 ; Installer's filename
-Outfile "${APPNAME} Installer.exe"
+Outfile "${APPNAME} Installer ${FULLVERSION}.exe"
 RequestExecutionLevel admin
 
 
@@ -174,6 +177,7 @@ section "install"
     ; Set path variable in org.ils_evergreen.hatch.json to $INSTDIR\hatch.bat
     ${StrRep} '$0' '$INSTDIR' '\' '\\'
     !insertmacro _ReplaceInFile  "$INSTDIR\extension\host\org.evergreen_ils.hatch.json" "/path/to/hatch.sh" "$0\\hatch.bat"
+    AccessControl::EnableFileInheritance "$INSTDIR\extension\host\org.evergreen_ils.hatch.json"
 
     ; Uninstaller
     writeUninstaller "$INSTDIR\Uninstall ${APPNAME}.exe"
