@@ -29,7 +29,7 @@
 !addplugindir .
 
 ; Installer's filename
-Outfile "${APPNAME} Installer ${FULLVERSION}.exe"
+Outfile "${APPNAME}-Installer-${FULLVERSION}.exe"
 RequestExecutionLevel admin
 
 
