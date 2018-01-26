@@ -1,6 +1,6 @@
 {
   "name": "Hatch Native Messenger",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "manifest_version": 2,
   "description": "Relays messages to/from Hatch.",
   "icons": { 
