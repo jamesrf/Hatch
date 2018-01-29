@@ -19,13 +19,13 @@ REM SET JAVAC=%JAVA_HOME%\bin\javac
 REM SET JAR=%JAVA_HOME%\bin\jar
 
 REM Is anyone there?
-%JAVA% --dry-run -cp "lib\*" org.evergreen_ils.hatch.Hatch 2>nul
+%JAVA% -version 2>nul
 
 IF %ERRORLEVEL% EQU 0 GOTO Huzzah
 
 REM Are you still there?
 SET JAVA=%PROGRAMDATA%\Oracle\Java\javapath\java
-%JAVA% --dry-run -cp "lib\*" org.evergreen_ils.hatch.Hatch 2>nul
+%JAVA% -version 2>nul
 
 IF %ERRORLEVEL% EQU 0 GOTO Huzzah
 
