@@ -1,18 +1,46 @@
 = Hatch Install Documentation =
 
-This documentation assumes Windows users will use the Hatch Windows 
-installer.  The Linux-only steps can also be done on Windows, but 
+This documentation assumes Windows users will use the Hatch Windows
+installer.  The xref:linux[Linux]-only steps can also be done on Windows, but
 are not documented here.
 
-== Install Java ==
+== Windows ==
 
-=== Windows ===
+=== Install Java ===
 
-Windows only requires a JRE to run Hatch, not a full JDK.  Download and 
-install JRE version 1.8 or higher from (for example) 
-http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html[oracle.com].
+Windows only requires a JRE to run Hatch, not a full JDK.  Download and
+install JRE version 1.8 or higher from (for example)
+http://java.com/[java.com].
 
-=== Linux ===
+=== Install Hatch ===
+
+Execute the 'Hatch-Installer-(version).exe' executable.
+
+NOTE: See installer/windows/README.adoc for building the Windows
+installer from Linux or Windows.  When building the Windows installer
+on Windows, the full JDK will be required (for compiling Java).
+
+==== Optional: Test Hatch ====
+
+[source,sh]
+-------------------------------------------------------------------------
+C:\>cd %ProgramFiles(x86)%\Hatch
+C:\Program Files (x86)\Hatch>hatch.sh test
+-------------------------------------------------------------------------
+
+=== Install Chrome Extension ===
+
+If the extension was not installed automatically when installing Hatch you can get it directly in the browser from the
+https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl[Chrome App Store]
+
+=== Continue with xref:using-hatch[Using Hatch] ===
+
+
+anchor:linux[]
+
+== Linux ==
+
+=== Install Java ===
 
 [source,sh]
 -------------------------------------------------------------------------
@@ -20,58 +48,19 @@ http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.h
 $ sudo apt-get install openjdk-8-jdk openjfx
 -------------------------------------------------------------------------
 
-== Install Hatch ==
-
-=== Windows ===
-
-Execute the 'Hatch Installer.exe' executable.
-
-NOTE: See installer/windows/README.adoc for building the Windows 
-installer from Linux or Windows.  When building the Windows installer
-on Windows, the full JDK will be required (for compiling Java).
-
-=== Linux ===
+=== Install Hatch ===
 
 [source,sh]
 -------------------------------------------------------------------------
 $ ./hatch.sh compile
 -------------------------------------------------------------------------
 
-==== Optional: Test Hatch ====
 
-NOTE: print commands are disabled by default in the tests to avoid 
-unexpected printing, but they can be added by un-commenting 
-them in src/org/evergreen_ils/hatch/TestHatch.java and recompiling.
+=== Configure Native Messaging ===
 
-[source,sh]
--------------------------------------------------------------------------
-$ mkdir -p ~/.evergreen
-$ ./hatch.sh test
--------------------------------------------------------------------------
-
-== Install Chrome Extension [Windows & Linux] ==
-
-. Install the exenstion directly in the browser from the 
-https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl[Chrome App Store]
-
-=== Optional: Debugging The Chrome Extension ===
-
- * Navigate to chrome://extensions
- * Enable "Developer Mode" along the top right of the page.
- * Click the "Background Page" link to see the exension console.
- * When the extension is loaded (or reloaded), it should show
-   "Connecting to native messaging host: org.evergreen_ils.hatch" 
-   in the Background Page console with no errors.
- * Use the "Reload" link to apply local changes made to the 
-   extension (e.g. main.js).  (This might only work when installing
-   the exention manually via developer mode tools).
- * See also https://developer.chrome.com/extensions/getstarted
-
-=== Linux: Configure Native Messaging ===
-
-Edit extension/host/org.evergreen_ils.hatch.json and change the "path" 
-value to match the location of your copy of "hatch.sh", found in the root 
-directory of the Hatch repository. 
+Edit extension/host/org.evergreen_ils.hatch.json and change the "path"
+value to match the location of your copy of "hatch.sh", found in the root
+directory of the Hatch repository.
 
 Copy the host file into Chrome's configuration directory.
 
@@ -91,6 +80,27 @@ $ mkdir -p ~/.config/chromium/NativeMessagingHosts/
 $ cp extension/host/org.evergreen_ils.hatch.json ~/.config/chromium/NativeMessagingHosts/
 -------------------------------------------------------------------------
 
+=== Install Chrome Extension ===
+
+Install the exenstion directly in the browser from the
+https://chrome.google.com/webstore/detail/hatch-native-messenger/ppooibdipmklfichpmkcgplfgdplgahl[Chrome App Store]
+
+
+==== Optional: Test Hatch ====
+
+NOTE: print commands are disabled by default in the tests to avoid
+unexpected printing, but they can be added by un-commenting
+them in src/org/evergreen_ils/hatch/TestHatch.java and recompiling.
+
+[source,sh]
+-------------------------------------------------------------------------
+$ mkdir -p ~/.evergreen
+$ ./hatch.sh test
+-------------------------------------------------------------------------
+
+
+anchor:using-hatch[]
+
 == Using Hatch ==
 
 * In Chrome, navigate to the browser staff URL (https://HOSTNAME/eg/staff/).
@@ -105,11 +115,24 @@ sending to Hatch: {"key":"eg.workstation.all","action":"get","msgid":1}
 Hatch responded to message ID 1
 -------------------------------------------------------------------------
 
-* Enable Hatch features by navigating to 
+* Enable Hatch features by navigating to
   https://HOSTNAME/eg/staff/admin/workstation/hatch.
 * To determine if Hatch can see your printer(s), navigate to
   https://HOSTNAME/eg/staff/admin/workstation/print/config
  ** The "Select Printer" drop-down should show your printer(s).
  ** The various printer attribute selectors should show values supported
     by the selected printer.
+
+=== Optional: Debugging The Chrome Extension ===
+
+ * Navigate to chrome://extensions
+ * Enable "Developer Mode" along the top right of the page.
+ * Click the "Background Page" link to see the exension console.
+ * When the extension is loaded (or reloaded), it should show
+   "Connecting to native messaging host: org.evergreen_ils.hatch"
+   in the Background Page console with no errors.
+ * Use the "Reload" link to apply local changes made to the
+   extension (e.g. main.js).  (This might only work when installing
+   the exention manually via developer mode tools).
+ * See also https://developer.chrome.com/extensions/getstarted
 
