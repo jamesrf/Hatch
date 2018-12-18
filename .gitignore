@@ -4,3 +4,6 @@ lib/
 *.zip
 *.dmg
 *.app
+
+target/
+dependency-reduced-pom.xml
